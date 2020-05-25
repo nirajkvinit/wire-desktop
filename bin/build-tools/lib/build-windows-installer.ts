@@ -17,7 +17,7 @@
  *
  */
 
-import {createWindowsInstaller, Options as electronWinstallerOptions} from 'electron-winstaller';
+import * as electronWinstaller from 'electron-winstaller';
 import fs from 'fs-extra';
 import path from 'path';
 
@@ -30,7 +30,7 @@ const logger = getLogger('build-tools', libraryName);
 
 interface WindowsInstallerConfigResult {
   windowsInstallerConfig: WindowsInstallerConfig;
-  wInstallerOptions: electronWinstallerOptions;
+  wInstallerOptions: electronWinstaller.Options;
 }
 
 export async function buildWindowsInstallerConfig(

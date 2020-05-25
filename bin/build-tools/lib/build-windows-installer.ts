@@ -52,7 +52,7 @@ export async function buildWindowsInstallerConfig(
     installerIconUrl: process.env.WIN_URL_ICON_INSTALLER || windowsInstallerDefaultConfig.installerIconUrl,
   };
 
-  const wInstallerOptions: electronWinstallerOptions = {
+  const wInstallerOptions: electronWinstaller.Options = {
     appDirectory: `${commonConfig.buildDir}/${commonConfig.name}-win32-ia32`,
     authors: commonConfig.name,
     copyright: commonConfig.copyright,
@@ -79,7 +79,7 @@ export async function buildWindowsInstallerConfig(
 export async function buildWindowsInstaller(
   wireJsonPath: string,
   envFilePath: string,
-  wInstallerOptions: electronWinstallerOptions,
+  wInstallerOptions: electronWinstaller.Options,
 ): Promise<void> {
   const wireJsonResolved = path.resolve(wireJsonPath);
   const envFileResolved = path.resolve(envFilePath);
@@ -91,7 +91,7 @@ export async function buildWindowsInstaller(
   await fs.writeJson(wireJsonResolved, commonConfig, {spaces: 2});
 
   try {
-    await createWindowsInstaller(wInstallerOptions);
+    await electronWinstaller.createWindowsInstaller(wInstallerOptions);
     const buildDir = path.resolve(wInstallerOptions.outputDirectory!);
     logger.log(`Built installer in "${buildDir}"`);
   } catch (error) {

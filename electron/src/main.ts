@@ -211,6 +211,7 @@ const showMainWindow = async (mainWindowState: WindowStateKeeper.State) => {
     webPreferences: {
       backgroundThrottling: false,
       enableBlinkFeatures: '',
+      enableRemoteModule: true,
       nodeIntegration: false,
       preload: PRELOAD_JS,
       webviewTag: true,
@@ -554,6 +555,7 @@ class ElectronWrapperInit {
             webPreferences.nodeIntegration = false;
             webPreferences.preload = PRELOAD_RENDERER_JS;
             webPreferences.webSecurity = true;
+            webPreferences.enableRemoteModule = true;
           });
           break;
         }

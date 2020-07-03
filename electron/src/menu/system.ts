@@ -18,7 +18,6 @@
  */
 
 import autoLaunch = require('auto-launch');
-import * as openExternal from 'open';
 import {dialog, globalShortcut, ipcMain, Menu, MenuItemConstructorOptions, shell} from 'electron';
 import * as path from 'path';
 
@@ -140,21 +139,7 @@ const showWireTemplate: MenuItemConstructorOptions = {
 
 const toggleMenuTemplate: MenuItemConstructorOptions = {
   checked: settings.restore(SettingsType.SHOW_MENU_BAR, true),
-  click: () => {
-    const mainBrowserWindow = WindowManager.getPrimaryWindow();
-
-    if (mainBrowserWindow) {
-      const showMenu = mainBrowserWindow.isMenuBarAutoHide();
-
-      mainBrowserWindow.setAutoHideMenuBar(!showMenu);
-
-      if (!showMenu) {
-        mainBrowserWindow.setMenuBarVisibility(showMenu);
-      }
-
-      settings.save(SettingsType.SHOW_MENU_BAR, showMenu);
-    }
-  },
+  click: () => toggleMenuBar(),
   label: locale.getText('menuShowHide'),
   type: 'checkbox',
 };
@@ -471,12 +456,10 @@ export const toggleMenuBar = (): void => {
   const mainBrowserWindow = WindowManager.getPrimaryWindow();
 
   if (mainBrowserWindow) {
-    const isVisible = mainBrowserWindow.isMenuBarVisible();
     const autoHide = mainBrowserWindow.isMenuBarAutoHide();
-
-    if (autoHide) {
-      mainBrowserWindow.setMenuBarVisibility(!isVisible);
-    }
+    mainBrowserWindow.setAutoHideMenuBar(!autoHide);
+    mainBrowserWindow.setMenuBarVisibility(autoHide);
+    settings.save(SettingsType.SHOW_MENU_BAR, autoHide);
   }
 };
 

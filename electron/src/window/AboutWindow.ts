@@ -70,6 +70,7 @@ const showWindow = async () => {
       title: config.name,
       webPreferences: {
         enableBlinkFeatures: '',
+        enableRemoteModule: true,
         javascript: false,
         nodeIntegration: false,
         nodeIntegrationInWorker: false,

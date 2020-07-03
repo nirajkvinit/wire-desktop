@@ -121,12 +121,6 @@ export class SingleSignOn {
     delete (this.windowOptions as any).webPreferences.preloadURL;
     delete (this.windowOptions as any).webPreferences.preload;
 
-    // NOTE: The openerId is used to keep a reference to the child window in the parent window.
-    // Since Electron 6.1.8 guestInstanceId + openerId + contextIsolation in webPreferences seems to be broken/disallowed.
-    // Instead we remove the openerId and close the window locally instead of closing it remotely from the parent window.
-    // https://github.com/electron/electron/commit/eff5cee15b7d4c16f770a386aca46e04feacca06#diff-35189e17bce17cc33fb9c6cb1c6eb502R171
-    delete (this.windowOptions as any).webPreferences.openerId;
-
     const ssoWindow = new BrowserWindow({
       ...this.windowOptions,
       alwaysOnTop: true,
@@ -183,6 +177,7 @@ export class SingleSignOn {
         }
       }
       this.session = undefined;
+      this.ssoWindow = undefined;
     });
 
     // Prevent title updates and new windows
@@ -346,12 +341,6 @@ export class SingleSignOn {
     await this.senderWebContents.executeJavaScript(
       `window.dispatchEvent(new MessageEvent('message', {origin: '${this.windowOriginUrl.origin}', data: {type: '${type}'}, type: {isTrusted: true}}));`,
     );
-
-    // We remove the openerId and close the window locally instead of closing it remotely from the parent window.
-    if (this.ssoWindow) {
-      this.ssoWindow.close();
-      this.ssoWindow = undefined;
-    }
   }
 
   private async wipeSessionData() {

@@ -186,9 +186,9 @@ const initWindowStateKeeper = () => {
   };
 
   if (showInFullScreen !== 'not-set-in-v0') {
-    stateKeeperOptions.fullScreen = showInFullScreen;
-    stateKeeperOptions.maximize = showInFullScreen;
-    isFullScreen = showInFullScreen;
+    stateKeeperOptions.fullScreen = showInFullScreen as boolean;
+    stateKeeperOptions.maximize = showInFullScreen as boolean;
+    isFullScreen = showInFullScreen as boolean;
   }
 
   return WindowStateKeeper(stateKeeperOptions);
@@ -534,6 +534,8 @@ class ElectronWrapperInit {
       }
     };
 
+    const enableSpellChecking = settings.restore(SettingsType.ENABLE_SPELL_CHECKING, true);
+
     app.on('web-contents-created', async (_webviewEvent: ElectronEvent, contents: WebContents) => {
       if (proxyInfoArg?.origin && contents.session) {
         this.logger.log('Applying proxy settings on a webview...');
@@ -552,7 +554,7 @@ class ElectronWrapperInit {
             webPreferences.experimentalFeatures = true;
             webPreferences.nodeIntegration = false;
             webPreferences.preload = PRELOAD_RENDERER_JS;
-            webPreferences.spellcheck = true;
+            webPreferences.spellcheck = enableSpellChecking;
             webPreferences.webSecurity = true;
             webPreferences.enableRemoteModule = true;
           });
@@ -583,15 +585,17 @@ class ElectronWrapperInit {
             });
           }
 
-          try {
-            const availableSpellCheckerLanguages = contents.session.availableSpellCheckerLanguages;
-            const foundLanguages = locale.supportedSpellCheckLanguages[currentLocale].filter(language =>
-              availableSpellCheckerLanguages.includes(language),
-            );
-            contents.session.setSpellCheckerLanguages(foundLanguages);
-          } catch (error) {
-            logger.error(error);
-            contents.session.setSpellCheckerLanguages([]);
+          if (enableSpellChecking) {
+            try {
+              const availableSpellCheckerLanguages = contents.session.availableSpellCheckerLanguages;
+              const foundLanguages = locale.supportedSpellCheckLanguages[currentLocale].filter(language =>
+                availableSpellCheckerLanguages.includes(language),
+              );
+              contents.session.setSpellCheckerLanguages(foundLanguages);
+            } catch (error) {
+              logger.error(error);
+              contents.session.setSpellCheckerLanguages([]);
+            }
           }
 
           contents.session.setCertificateVerifyProc(setCertificateVerifyProc);

@@ -346,7 +346,7 @@ const handleAppEvents = () => {
     isQuitting = true;
   });
 
-  app.on('login', async (event, webContents, _request, authInfo, callback) => {
+  app.on('login', async (event, webContents, _responseDetails, authInfo, callback) => {
     if (authInfo.isProxy) {
       event.preventDefault();
       const {host, port} = authInfo;
@@ -360,18 +360,21 @@ const handleAppEvents = () => {
         } = systemProxySettings;
         proxyInfoArg = ProxyAuth.generateProxyURL({host, port}, {password, protocol, username});
         logger.log('Applying proxy settings on the main window...');
+
         await applyProxySettings(proxyInfoArg, main.webContents);
         return callback(username, password);
       }
 
       if (proxyInfoArg) {
         const hasCredentials = proxyInfoArg.username && proxyInfoArg.password;
+
         if (hasCredentials) {
           const {username, password} = proxyInfoArg;
           logger.info('Sending provided credentials to authenticated proxy ...');
           await applyProxySettings(proxyInfoArg, main.webContents);
           return callback(username, password);
         }
+
         ipcMain.once(
           EVENT_TYPE.PROXY_PROMPT.SUBMITTED,
           async (_event, promptData: {password: string; username: string}) => {
@@ -397,11 +400,7 @@ const handleAppEvents = () => {
         ipcMain.once(EVENT_TYPE.PROXY_PROMPT.CANCELED, async () => {
           logger.log('Proxy prompt was canceled');
 
-          await webContents.session.setProxy({
-            pacScript: '',
-            proxyBypassRules: '',
-            proxyRules: '',
-          });
+          await webContents.session.setProxy({});
 
           try {
             main.reload();
@@ -482,18 +481,16 @@ const handlePortableFlags = () => {
   }
 };
 
-const applyProxySettings = async (authenticatedProxyDetails: any, webContents: Electron.WebContents) => {
+const applyProxySettings = async (authenticatedProxyDetails: URL, webContents: Electron.WebContents) => {
   const proxyURL = authenticatedProxyDetails.origin.split('://')[1];
   const proxyProtocol = authenticatedProxyDetails.protocol;
   const isSocksProxy = proxyProtocol === 'socks4:' || proxyProtocol === 'socks5:';
 
   logger.info(`Setting proxy on a window to URL "${proxyURL}" with protocol "${proxyProtocol}"...`);
   webContents.session.allowNTLMCredentialsForDomains(authenticatedProxyDetails.hostname);
-  await webContents.session.setProxy({
-    pacScript: '',
-    proxyBypassRules: '',
-    proxyRules: isSocksProxy ? `socks=${proxyURL}` : `http=${proxyURL};https=${proxyURL}`,
-  });
+
+  const proxyRules = isSocksProxy ? `socks=${proxyURL}` : `http=${proxyURL};https=${proxyURL}`;
+  await webContents.session.setProxy({pacScript: '', proxyBypassRules: '', proxyRules});
 };
 
 class ElectronWrapperInit {
@@ -588,7 +585,7 @@ class ElectronWrapperInit {
 
           try {
             const availableSpellCheckerLanguages = contents.session.availableSpellCheckerLanguages;
-            const foundLanguages = locale.suportedSpellCheckLanguages[currentLocale].filter(language =>
+            const foundLanguages = locale.supportedSpellCheckLanguages[currentLocale].filter(language =>
               availableSpellCheckerLanguages.includes(language),
             );
             contents.session.setSpellCheckerLanguages(foundLanguages);

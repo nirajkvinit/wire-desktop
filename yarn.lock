@@ -1340,6 +1340,13 @@
   dependencies:
     defer-to-connect "^1.0.1"
 
+"@types/adm-zip@0.4.33":
+  version "0.4.33"
+  resolved "https://registry.npmjs.org/@types/adm-zip/-/adm-zip-0.4.33.tgz#ea5b94f771443f655613b64f920c0555867200dd"
+  integrity sha512-WM0DCWFLjXtddl0fu0+iN2ZF+qz8RF9RddG5OSy/S90AQz01Fu8lHn/3oTIZDxvG8gVcnBLAHMHOdBLbV6m6Mw==
+  dependencies:
+    "@types/node" "*"
+
 "@types/auto-launch@5.0.1":
   version "5.0.1"
   resolved "https://registry.npmjs.org/@types/auto-launch/-/auto-launch-5.0.1.tgz#388a047edc0e754d8e8978cbd9ed4672b36be2c4"
@@ -1961,10 +1968,10 @@ acorn@^7.1.1:
   resolved "https://registry.npmjs.org/acorn/-/acorn-7.1.1.tgz#e35668de0b402f359de515c5482a1ab9f89a69bf"
   integrity sha512-add7dgA5ppRPxCFJoAGfMDi7PIBXq1RtGo7BhbLaxwrXPOmw8gq48Y9ozT01hUKy9byMjlR20EJhu5zlkErEkg==
 
-adm-zip@0.4.14:
-  version "0.4.14"
-  resolved "https://registry.npmjs.org/adm-zip/-/adm-zip-0.4.14.tgz#2cf312bcc9f8875df835b0f6040bd89be0a727a9"
-  integrity sha512-/9aQCnQHF+0IiCl0qhXoK7qs//SwYE7zX8lsr/DNk1BRAHYxeLZPL4pguwK29gUEqasYQjqPtEpDRSWEkdHn9g==
+adm-zip@0.4.16:
+  version "0.4.16"
+  resolved "https://registry.npmjs.org/adm-zip/-/adm-zip-0.4.16.tgz#cf4c508fdffab02c269cbc7f471a875f05570365"
+  integrity sha512-TFi4HBKSGfIKsK5YCkKaaFG2m4PEDyViZmEwof3MTIgzimHLto6muaHVpbrljdIvIrFZzEq/p4nafOeLcYegrg==
 
 aggregate-error@^3.0.0:
   version "3.0.1"
@@ -10879,20 +10886,6 @@ winreg@1.2.4:
   version "1.2.4"
   resolved "https://registry.npmjs.org/winreg/-/winreg-1.2.4.tgz#ba065629b7a925130e15779108cf540990e98d1b"
   integrity sha1-ugZWKbepJRMOFXeRCM9UCZDpjRs=
-
-"wire-web-config-internal@https://github.com/wireapp/wire-web-config-default#v0.25.1":
-  version "0.25.1"
-  resolved "https://github.com/wireapp/wire-web-config-default#78eb5b4728e64d794bc316f5a8395f699a0b5193"
-  dependencies:
-    adm-zip "0.4.14"
-    sort-json "2.0.0"
-
-"wire-web-config-production@https://github.com/wireapp/wire-web-config-wire#v0.25.2-0":
-  version "0.25.2-0"
-  resolved "https://github.com/wireapp/wire-web-config-wire#c8148412944e2211ac3e01ae896048ba69abc504"
-  dependencies:
-    adm-zip "0.4.14"
-    sort-json "2.0.0"
 
 word-wrap@~1.2.3:
   version "1.2.3"

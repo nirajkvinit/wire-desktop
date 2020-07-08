@@ -96,7 +96,7 @@ const currentLocale = locale.getCurrent();
 
 if (argv[config.ARGUMENT.VERSION]) {
   console.info(config.version);
-  app.quit();
+  app.exit();
 }
 
 logger.info(`Initializing ${config.name} v${config.version} ...`);
@@ -342,7 +342,6 @@ const handleAppEvents = () => {
   });
 
   app.on('before-quit', () => {
-    settings.persistToFile();
     isQuitting = true;
   });
 
@@ -525,7 +524,7 @@ class ElectronWrapperInit {
     };
 
     const willNavigateInWebview = (event: ElectronEvent, url: string, baseUrl: string) => {
-      // Ensure navigation is to a whitelisted domain
+      // Ensure navigation is to an allowed domain
       if (OriginValidator.isMatchingHost(url, baseUrl)) {
         this.logger.log(`Navigating inside webview. URL: ${url}`);
       } else {
@@ -628,7 +627,15 @@ class ElectronWrapperInit {
 
           contents.on('before-input-event', (_event, input) => {
             if (input.type === 'keyUp' && input.key === 'Alt') {
-              systemMenu.toggleMenuBar();
+              const mainBrowserWindow = WindowManager.getPrimaryWindow();
+
+              if (mainBrowserWindow) {
+                const isAutoHide = mainBrowserWindow.isMenuBarAutoHide();
+                const isVisible = mainBrowserWindow.isMenuBarVisible();
+                if (isAutoHide) {
+                  mainBrowserWindow.setMenuBarVisibility(!isVisible);
+                }
+              }
             }
           });
 
